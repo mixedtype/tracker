@@ -1,0 +1,17 @@
+{
+  "name": "mixedtype/tracker",
+  "type": "library",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "Mixedtype\\Tracker\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "mixedtype",
+      "email": "mixedtype@elcoms.sk"
+    }
+  ],
+  "require": {}
+}
