@@ -72,7 +72,17 @@ trait TrackerWriterTrait
         if(!file_exists(dirname($filename))) {
             mkdir(dirname($filename), 0777, true);
         }
+        $this->decorateDataBeforeSave();
         file_put_contents($filename, json_encode($this->fileStorageData, JSON_PRETTY_PRINT));
+    }
+
+    private function decorateDataBeforeSave()
+    {
+        if(isset($this->fileStorageData['db'])) {
+            usort($this->fileStorageData['db'], function ($a, $b) {
+                return $a['data']['duration'] <=> $b['data']['duration'];
+            });
+        }
     }
 
 }
