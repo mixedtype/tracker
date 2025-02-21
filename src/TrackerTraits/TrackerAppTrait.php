@@ -116,21 +116,35 @@ trait TrackerAppTrait
         return $this;
     }
 
-    public function trackAppTerminateAndSave() : Tracker
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     * @return Tracker
+     */
+    public function trackAppTerminateAndSave($request = null, $response = null) : Tracker
     {
         if(!$this->trackerIsEnabled) {
             return $this;
         }
 
+        $custom = [];
+        if($response) {
+            $custom['response'] = [
+                'code' => $response->getStatusCode(),
+                'content_type' => $response->headers->get('Content-Type'),
+                'content_length' => strlen($response->getContent()),
+            ];
+        }
+
         $timestamp = microtime(true);
-        $this->end('app', [
+        $this->end('app', array_merge([
             'request_id' => $this->getRequestId(),
             'app_end' => $timestamp,
             'app_duration' => $timestamp - LARAVEL_START,
             'tracker_terminate' => defined('TRACKER_TERMINATE') ? TRACKER_TERMINATE : null,
             'counters' => $this->counters,
             'sums' => $this->sums,
-        ]);
+        ], $custom));
         $this->save();
         $this->writeIsEnabled = false;
         return $this;

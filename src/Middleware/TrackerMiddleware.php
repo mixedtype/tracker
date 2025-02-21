@@ -25,6 +25,6 @@ class TrackerMiddleware
 
     public function terminate($request, $response): void
     {
-        \Mixedtype\Tracker\Tracker::getInstance()->trackAppTerminateAndSave();
+        \Mixedtype\Tracker\Tracker::getInstance()->trackAppTerminateAndSave($request, $response);
     }
 }
