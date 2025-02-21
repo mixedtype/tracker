@@ -131,6 +131,16 @@ trait TrackerAppTrait
         return $this;
     }
 
+    public function trackAppValueAdd($tag, $addValue = 0)
+    {
+        if($this->fileStorageData['app'][0]['tag'] === 'app') {
+            if(!isset($this->fileStorageData['app'][0]['data'][$tag])) {
+                $this->fileStorageData['app'][0]['data'][$tag] = 0;
+            }
+            $this->fileStorageData['app'][0]['data'][$tag] += $addValue;
+        }
+    }
+
 
 
 }
