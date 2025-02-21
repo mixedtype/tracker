@@ -17,7 +17,11 @@ class Tracker
     use TrackerWriterTrait;
     use TrackerDebugTrait;
 
-    public function trackDb(QueryExecuted | array $query) : Tracker
+    /**
+     * @param QueryExecuted|array $query
+     * @return Tracker
+     */
+    public function trackDb($query) : Tracker
     {
         if(!$this->trackerIsEnabled) {
             return false;
@@ -26,20 +30,19 @@ class Tracker
         if(is_array($query)) {
             return $this->track(
                 'db_query',
-                [
-                    ...$query,
-                    ...$this->calledFrom()
-                ],
+                array_merge(
+                    $query,
+                    $this->calledFrom()
+                ),
                 'db');
         }
 
-        return $this->track('db_query', [
+        return $this->track('db_query', array_merge([
             'query' => $query->sql,
             'bindings' => $query->bindings,
             'duration' => round($query->time/1000, 9), // in seconds
             'connection' => $query->connection->getName(),
-            ...$this->calledFrom()
-        ], 'db');
+        ], $this->calledFrom()), 'db');
     }
 
 
