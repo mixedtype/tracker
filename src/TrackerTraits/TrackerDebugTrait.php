@@ -38,6 +38,13 @@ trait TrackerDebugTrait
                 continue;
             }
 
+            if(isset($this->config['groups']['app']['ignore_backtrace_paths'])) {
+                foreach ($this->config['groups']['app']['ignore_backtrace_paths'] as $path) {
+                    if (strpos($item['file'], $path) !== false) {
+                        continue 2;
+                    }
+                }
+            }
 
             $call = $item;
             break;
