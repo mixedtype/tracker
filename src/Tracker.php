@@ -28,6 +28,9 @@ class Tracker
         }
 
         if(is_array($query)) {
+            $this->trackAppCounter('db_queries_count');
+            $this->trackAppSum('db_queries_duration', $query['duration']);
+
             return $this->track(
                 'db_query',
                 array_merge(
