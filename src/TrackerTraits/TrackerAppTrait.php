@@ -11,6 +11,9 @@ trait TrackerAppTrait
     protected static $appWasSaved = false;
     protected static $request_id = null;
 
+    protected $counters = [];
+    protected $sums = [];
+
     public static function appWasInitialized() : bool
     {
         return self::$appWasInitialized;
@@ -125,19 +128,29 @@ trait TrackerAppTrait
             'app_end' => $timestamp,
             'app_duration' => $timestamp - LARAVEL_START,
             'tracker_terminate' => defined('TRACKER_TERMINATE') ? TRACKER_TERMINATE : null,
+            'counters' => $this->counters,
+            'sums' => $this->sums,
         ]);
         $this->save();
         $this->writeIsEnabled = false;
         return $this;
     }
 
-    public function trackAppValueAdd($tag, $addValue = 0)
+    public function trackAppCounter($tag, $addValue = 1)
     {
-        if($this->fileStorageData['app'][0]['tag'] === 'app') {
-            if(!isset($this->fileStorageData['app'][0]['data'][$tag])) {
-                $this->fileStorageData['app'][0]['data'][$tag] = 0;
-            }
-            $this->fileStorageData['app'][0]['data'][$tag] += $addValue;
+        if(isset($this->counters[$tag])) {
+            $this->counters[$tag] += $addValue;
+        } else {
+            $this->counters[$tag] = $addValue;
+        }
+    }
+
+    public function trackAppSum($tag, $addValue)
+    {
+        if(isset($this->sums[$tag])) {
+            $this->sums[$tag] += $addValue;
+        } else {
+            $this->sums[$tag] = $addValue;
         }
     }
 

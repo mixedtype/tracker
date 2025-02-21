@@ -39,8 +39,8 @@ class Tracker
 
         $duration = round($query->time/1000, 9); // in seconds
 
-        $this->trackAppValueAdd('db_queries_count', 1);
-        $this->trackAppValueAdd('db_queries_duration', $duration);
+        $this->trackAppCounter('db_queries_count');
+        $this->trackAppSum('db_queries_duration', $duration);
 
         return $this->track('db_query', array_merge([
             'query' => $query->sql,
