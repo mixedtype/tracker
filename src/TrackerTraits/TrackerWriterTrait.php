@@ -80,7 +80,7 @@ trait TrackerWriterTrait
     {
         if(isset($this->fileStorageData['db'])) {
             usort($this->fileStorageData['db'], function ($a, $b) {
-                return $a['data']['duration'] <=> $b['data']['duration'];
+                return $b['data']['duration'] <=> $a['data']['duration'];
             });
         }
     }
