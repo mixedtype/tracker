@@ -65,7 +65,7 @@ trait TrackerAppTrait
             if (isset($_SERVER['REQUEST_URI'])) {
                 if (isset($this->config['groups']['app']['ignore_requests'])) {
                     foreach ($this->config['groups']['app']['ignore_requests'] as $ignore) {
-                        if (str_starts_with($_SERVER['REQUEST_URI'], $ignore)) {
+                        if ($this->str_starts_with($_SERVER['REQUEST_URI'], $ignore)) {
                             $this->writeIsEnabled = false;
                             break;
                         }
@@ -82,6 +82,11 @@ trait TrackerAppTrait
         }
 
         return $this;
+    }
+
+    private function str_starts_with($haystack, $needle) : bool
+    {
+        return strpos($haystack, $needle) === 0;
     }
 
     function trackAdvancedAppInfoFromMiddleware()
