@@ -7,6 +7,7 @@ use Symfony\Component\VarDumper\VarDumper;
 
 trait TrackerDebugTrait
 {
+    private static string $dumpType = 'dump';
     public function calledFrom()
     {
         $call = null;
@@ -68,6 +69,7 @@ trait TrackerDebugTrait
             header('HTTP/1.1 500 Internal Server Error');
         }
 
+        self::$dumpType = 'dd';
         self::dump(...$vars);
 
         $tracker = self::getInstance();
@@ -80,17 +82,17 @@ trait TrackerDebugTrait
         $tracker = self::getInstance();
 
         if (!$vars) {
-            $tracker->track('dump', ['data' => new ScalarStub('🐛'), ...$tracker->calledFrom()], 'debug');
+            $tracker->track(self::$dumpType, ['data' => new ScalarStub('🐛'), ...$tracker->calledFrom()], 'debug');
             VarDumper::dump(new ScalarStub('🐛'));
 
             return null;
         }
 
         if (array_key_exists(0, $vars) && 1 === count($vars)) {
-            $tracker->track('dump', array_merge(['data' => $vars[0]], $tracker->calledFrom()), 'debug');
+            $tracker->track(self::$dumpType, array_merge(['data' => $vars[0]], $tracker->calledFrom()), 'debug');
             VarDumper::dump(array_merge(['data' => $vars[0]], $tracker->calledFrom()));
         } else {
-            $tracker->track('dump', array_merge(['data' => $vars], $tracker->calledFrom()), 'debug');
+            $tracker->track(self::$dumpType, array_merge(['data' => $vars], $tracker->calledFrom()), 'debug');
             VarDumper::dump(array_merge(['data' => $vars], $tracker->calledFrom()));
         }
 
