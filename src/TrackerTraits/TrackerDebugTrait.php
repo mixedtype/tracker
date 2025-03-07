@@ -68,15 +68,10 @@ trait TrackerDebugTrait
             header('HTTP/1.1 500 Internal Server Error');
         }
 
+        self::dump(...$vars);
+
         $tracker = self::getInstance();
-        $tracker->track('dd', array_merge(['data' => $vars], $tracker->calledFrom()), 'debug');
         $tracker->save();
-
-
-        foreach ($vars as $v) {
-            VarDumper::dump(array_merge(['data' => $vars], $tracker->calledFrom()));
-        }
-
         die();
     }
 
@@ -93,19 +88,16 @@ trait TrackerDebugTrait
 
         if (array_key_exists(0, $vars) && 1 === count($vars)) {
             $tracker->track('dump', array_merge(['data' => $vars[0]], $tracker->calledFrom()), 'debug');
-            VarDumper::dump($vars[0]);
-            $k = 0;
+            VarDumper::dump(array_merge(['data' => $vars[0]], $tracker->calledFrom()));
         } else {
-            foreach ($vars as $k => $v) {
-                $tracker->track('dump', array_merge(['data' => $v], $tracker->calledFrom()), 'debug');
-                VarDumper::dump($v, is_int($k) ? 1 + $k : $k);
-            }
+            $tracker->track('dump', array_merge(['data' => $vars], $tracker->calledFrom()), 'debug');
+            VarDumper::dump(array_merge(['data' => $vars], $tracker->calledFrom()));
         }
 
         if (1 < count($vars)) {
             return $vars;
         }
 
-        return $vars[$k];
+        return $vars[0];
     }
 }
