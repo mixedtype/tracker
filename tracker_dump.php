@@ -5,7 +5,7 @@ if (!function_exists('dump')) {
      * @param mixed ...$vars
      * @return mixed
      */
-    function dump(...$vars): mixed
+    function dump(...$vars)
     {
         return \Mixedtype\Tracker\Tracker::dump($vars);
     }
