@@ -75,7 +75,7 @@ trait TrackerDebugTrait
         die();
     }
 
-    static function dump(mixed ...$vars): mixed
+    static function dump(...$vars): mixed
     {
         $tracker = self::getInstance();
 
