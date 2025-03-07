@@ -24,7 +24,7 @@ class Tracker
     public function trackDb($query) : Tracker
     {
         if(!$this->trackerIsEnabled) {
-            return false;
+            return $this;
         }
 
         if(is_array($query)) {
