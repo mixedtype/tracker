@@ -8,9 +8,9 @@ use Symfony\Component\VarDumper\VarDumper;
 trait TrackerDebugTrait
 {
     private static string $dumpType = 'dump';
-    public function calledFrom()
+    public function calledFrom():array
     {
-        $call = null;
+        $calls = [];
         $stack = debug_backtrace();
         foreach($stack as $item) {
             if(strpos($item['file'], '/vendor/laravel/framework') !== false) {
@@ -47,17 +47,18 @@ trait TrackerDebugTrait
                 }
             }
 
-            $call = $item;
-            break;
-        }
-        if(substr($item['file'], 0, strlen(base_path())) === base_path()) {
-            $call['file'] = substr($item['file'], strlen(base_path()) + 1);
+
+            if(substr($item['file'], 0, strlen(base_path())) === base_path()) {
+                $item['file'] = substr($item['file'], strlen(base_path()) + 1);
+            }
+            $calls[] = ($item['file']??null) . ':' . ($item['line']??null);
+            if(count($calls) >= 3) {
+                break;
+            }
         }
 
-        return [
-            'file' => $call['file'] ?? null,
-            'line' => $call['line'] ?? null,
-        ];
+
+        return ['stack' => $calls];
     }
 
 
