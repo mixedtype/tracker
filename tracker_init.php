@@ -1,9 +1,14 @@
 <?php
 
-ini_set('display_errors', 1);
+define('MIXEDTYPE_TRACKER_INIT', microtime(true));
+
 if(!defined('REQUEST_ID')) {
     define('REQUEST_ID', uniqid('app', true));
 }
+if(!defined('LARAVEL_START')) {
+    define('LARAVEL_START', microtime(true));
+}
+
 
 $includedFiles = get_included_files();
 $dirs = explode('/public/index.php', $includedFiles[0]);
