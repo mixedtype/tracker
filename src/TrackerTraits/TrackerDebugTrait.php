@@ -62,16 +62,21 @@ trait TrackerDebugTrait
 
     // todo: refactor to use VarDumper::dump - registrujem si vlastny handler
 
-    static function dd($data)
+    static function dd(...$vars)
     {
+        if (!in_array(\PHP_SAPI, ['cli', 'phpdbg'], true) && !headers_sent()) {
+            header('HTTP/1.1 500 Internal Server Error');
+        }
+
         $tracker = self::getInstance();
-        $tracker->track('dd', ['data' => $data, ...$tracker->calledFrom()], 'debug');
+        $tracker->track('dd', array_merge(['data' => $vars], $tracker->calledFrom()), 'debug');
         $tracker->save();
 
 
-        echo '<pre>';
-        print_r(['data' => $data, ...$tracker->calledFrom()]);
-        echo '</pre>';
+        foreach ($vars as $v) {
+            VarDumper::dump(array_merge(['data' => $vars], $tracker->calledFrom()));
+        }
+
         die();
     }
 
@@ -87,12 +92,12 @@ trait TrackerDebugTrait
         }
 
         if (array_key_exists(0, $vars) && 1 === count($vars)) {
-            $tracker->track('dump', ['data' => $vars[0], ...$tracker->calledFrom()], 'debug');
+            $tracker->track('dump', array_merge(['data' => $vars[0]], $tracker->calledFrom()), 'debug');
             VarDumper::dump($vars[0]);
             $k = 0;
         } else {
             foreach ($vars as $k => $v) {
-                $tracker->track('dump', ['data' => $v, ...$tracker->calledFrom()], 'debug');
+                $tracker->track('dump', array_merge(['data' => $v], $tracker->calledFrom()), 'debug');
                 VarDumper::dump($v, is_int($k) ? 1 + $k : $k);
             }
         }
